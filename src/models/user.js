@@ -1,4 +1,5 @@
 const { Schema, model } = require('mongoose');
+const autopopulate = require('mongoose-autopopulate');
 
 const schemaObj = new Schema({
   firstName: {
@@ -65,6 +66,14 @@ const schemaObj = new Schema({
     ],
     default: 'active',
   },
+  shippingAddresses: {
+    type: [ 'Object' ]   
+  },
+  orders: {
+    type: [ 'ObjectId' ],
+    ref: 'Order'
+  }
 });
 
+schemaObj.plugin(autopopulate);
 module.exports = model('User', schemaObj);

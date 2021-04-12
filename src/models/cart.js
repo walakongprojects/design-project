@@ -1,4 +1,5 @@
 const { Schema, model } = require('mongoose');
+const autopopulate = require('mongoose-autopopulate');
 
 const schemaObj = new Schema({
     user: {
@@ -8,6 +9,7 @@ const schemaObj = new Schema({
         true,
         'User is required',
         ],
+        
     },
     products: {
         type: [ 'ObjectId' ],
@@ -15,4 +17,5 @@ const schemaObj = new Schema({
     }
 });
 
+schemaObj.plugin(autopopulate);
 module.exports = model('Cart', schemaObj);
