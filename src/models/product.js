@@ -12,8 +12,14 @@ const schemaObj = new Schema({
     type: 'String',
     required: [
       true,
-      'Last name is required',
+      'Description is required',
     ],
+  },
+  mainPicture: {
+    type: 'String'
+  },
+  pictures: {
+    type: [ 'String' ]
   },
   quantity: {
     type: 'Number',

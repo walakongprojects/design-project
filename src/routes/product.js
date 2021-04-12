@@ -1,38 +1,38 @@
 const router = require('express').Router({ mergeParams: true });
-const UserModel = require('../models/user');
+const ProductModel = require('../models/product');
 
 router.get('/', async (req, res) => {
-  const foundUsers = await UserModel.find();
-  res.json(foundUsers);
+  const foundProducts = await ProductModel.find();
+  res.json(foundProducts);
 });
 
 router.get('/:_id', async (req, res) => {
   const { _id } = req.params;
-  const foundUser = await UserModel.findById({ id: _id });
-  res.json(foundUser);
+  const foundProduct = await ProductModel.findById({ id: _id });
+  res.json(foundProduct);
 });
 
 router.post('/', async (req, res) => {
   const { data } = req.body;
-  const createdUser = await UserModel.create({
+  const createdProduct = await ProductModel.create({
     ...data,
     role: 9,
   });
-  res.json(createdUser);
+  res.json(createdProduct);
 });
 
 router.put('/:_id', async (req, res) => {
   const { _id } = req.params;
   const { data } = req.body;
-  const updatedUser = await UserModel.findOneAndUpdate({ id: _id }, {
+  const updatedProduct = await ProductModel.findOneAndUpdate({ id: _id }, {
     ...data,
   });
-  res.json(updatedUser);
+  res.json(updatedProduct);
 });
 
 router.delete('/:_id', async (req, res) => {
   const { _id } = req.params;
-  await UserModel.deleteOne({ id: _id });
+  await ProductModel.deleteOne({ id: _id });
   res.json({
     message: 'success',
   });
