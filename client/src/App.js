@@ -1,35 +1,52 @@
-import React from 'react';
-import {
-  Image,
-} from 'cloudinary-react';
-import UploadImage from './components/imageUploadTest';
-import UploadImageTwo from './components/imageUploadTestTwo';
+/* eslint-disable react/prop-types */
+/* eslint-disable no-shadow */
+import React, { useState } from 'react';
+import { connect } from 'react-redux';
+import { ThemeProvider } from '@material-ui/core/styles';
+import { BrowserRouter as Router, Route } from 'react-router-dom';
+import Navbar from './components/layout/Navbar';
+import theme from './components/theme';
+import Login from './components/auth/Login';
+import Register from './components/auth/Register';
+import { decreaseCounter, increaseCounter } from './actions/authAction';
 
-function App() {
+function App(props) {
+  const [value, setValue] = useState(0);
+  const [selectedIndex, setSelectedIndex] = useState(1);
+
+  const { count, increaseCounter, decreaseCounter } = props;
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <p>
-          Edit
-          {' '}
-          <code>src/App.js</code>
-          {' '}
-          and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-        <Image cloudName="dpgjysglx" publicId="chillhotel/hotel/601b11a2ac579a2c1ce79ea6" width="300" crop="scale" />
-        <UploadImage defaultImage={null} />
-        <UploadImageTwo />
-      </header>
-    </div>
+    <ThemeProvider theme={theme}>
+      <Router>
+        <Navbar
+          value={value}
+          setValue={setValue}
+          selectedIndex={selectedIndex}
+          setSelectedIndex={setSelectedIndex}
+        />
+        <div>
+          <div>
+            Count:
+            {count}
+          </div>
+          <button onClick={() => increaseCounter()} type="button">Increase Count</button>
+          <button onClick={() => decreaseCounter()} type="button">Decrease Count</button>
+        </div>
+        <Route exact path="/login" component={Login} />
+        <Route exact path="/register" component={Register} />
+      </Router>
+    </ThemeProvider>
   );
 }
 
-export default App;
+const mapStateToProps = (state) => ({
+  count: state.auth.count,
+});
+
+const mapDispatchToProps = (dispatch) => ({
+  increaseCounter: () => dispatch(increaseCounter()),
+  decreaseCounter: () => dispatch(decreaseCounter()),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);
