@@ -12,7 +12,7 @@ const schemaObj = new Schema({
   products: {
     type: ['ObjectId'],
     ref: 'Product',
-    autopopulate: true
+    autopopulate: true,
   },
   _status: {
     type: 'String',

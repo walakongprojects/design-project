@@ -17,10 +17,10 @@ const schemaObj = new Schema({
     ],
   },
   mainPicture: {
-    type: 'String'
+    type: 'String',
   },
   pictures: {
-    type: [ 'String' ]
+    type: ['String'],
   },
   quantity: {
     type: 'Number',

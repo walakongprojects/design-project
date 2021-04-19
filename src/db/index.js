@@ -1,4 +1,4 @@
-// eslint-disable no-console
+/* eslint-disable no-console */
 const mongoose = require('mongoose');
 
 module.exports = (dbUri) => {
@@ -6,11 +6,12 @@ module.exports = (dbUri) => {
     useNewUrlParser: true,
     useUnifiedTopology: true,
     useFindAndModify: false,
+    useCreateIndex: true,
   })
-  .then(() => {
-    console.log('Database is running');
-  })
-  .catch((err) => {
-    console.log('Failed to connect to database: ', err);
-  })
+    .then(() => {
+      console.log('Database is running');
+    })
+    .catch((err) => {
+      console.log('Failed to connect to database: ', err);
+    });
 };

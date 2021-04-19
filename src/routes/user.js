@@ -14,6 +14,8 @@ router.get('/:_id', async (req, res) => {
 
 router.post('/', async (req, res) => {
   const { data } = req.body;
+  console.log('aaaa');
+  console.log(data);
   const createdUser = await UserModel.create({
     ...data,
     role: 9,

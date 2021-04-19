@@ -1,7 +1,31 @@
+/* eslint-disable func-names */
 const { Schema, model } = require('mongoose');
+const { isEmail } = require('validator');
 const autopopulate = require('mongoose-autopopulate');
+const argon2 = require('argon2');
 
-const schemaObj = new Schema({
+const addressesObj = new Schema({
+  region: {
+    type: 'String',
+  },
+  province: {
+    type: 'String',
+  },
+  cityOrMunicipality: {
+    type: 'String',
+  },
+  barangay: {
+    type: 'String',
+  },
+  addressLineOne: {
+    type: 'String',
+  },
+  addressLineTwo: {
+    type: 'String',
+  },
+});
+
+const schema = new Schema({
   firstName: {
     type: 'String',
     required: [
@@ -19,9 +43,32 @@ const schemaObj = new Schema({
   middleName: {
     type: 'String',
   },
-  suffix: {
+  email: {
     type: 'String',
+    required: [
+      true,
+      'Email is required',
+    ],
+    validate: [
+      isEmail,
+      'Please input a valid email',
+    ],
+    index: {
+      unique: true,
+      collation: {
+        lang: 'en',
+        strength: 2,
+      },
+    },
   },
+  password: {
+    type: 'String',
+    required: [
+      true,
+      'Password is required',
+    ],
+  },
+  addresses: [addressesObj],
   /*
     1 = admin
     9 = normal user
@@ -32,6 +79,7 @@ const schemaObj = new Schema({
       true,
       'Role is required',
     ],
+    default: 9,
   },
   phoneNumber: {
     type: 'String',
@@ -39,24 +87,6 @@ const schemaObj = new Schema({
       true,
       'Phone number is required',
     ],
-  },
-  region: {
-  },
-  province: {
-  },
-  cityOrMunicipality: {
-  },
-  barangay: {
-  },
-  addressLineOne: {
-    type: 'String',
-    required: [
-      true,
-      'Address Line 1 is required.',
-    ],
-  },
-  addressLineTwo: {
-    type: 'String',
   },
   _status: {
     type: 'String',
@@ -67,13 +97,27 @@ const schemaObj = new Schema({
     default: 'active',
   },
   shippingAddresses: {
-    type: [ 'Object' ]   
+    type: ['Object'],
   },
   orders: {
-    type: [ 'ObjectId' ],
-    ref: 'Order'
-  }
+    type: ['ObjectId'],
+    ref: 'Order',
+  },
 });
 
-schemaObj.plugin(autopopulate);
-module.exports = model('User', schemaObj);
+schema.pre('save', async function (next) {
+  this.password = await argon2.hash(this.password);
+  next();
+});
+
+schema.statics.comparePassword = async function (user, passedPassword) {
+  const { password } = user;
+  const result = await argon2.verify(password, passedPassword);
+  if (result) {
+    return true;
+  }
+  return false;
+};
+
+schema.plugin(autopopulate);
+module.exports = model('User', schema);
